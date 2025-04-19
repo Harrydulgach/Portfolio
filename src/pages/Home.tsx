@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import Background3D from '../components/Background3D';
 
 const Home = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [, setMousePosition] = useState({ x: 0, y: 0 });
   const heroRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
 
@@ -15,11 +16,11 @@ const Home = () => {
         cursorRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
       }
       
-      // 3D parallax effect for the hero section
+      // Subtle parallax effect for the hero section
       if (heroRef.current) {
-        const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-        const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-        heroRef.current.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
+        const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+        heroRef.current.style.transform = `translateX(${xAxis}px) translateY(${yAxis}px)`;
       }
     };
 
@@ -31,89 +32,86 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden crt-effect scanlines">
-      {/* Background pattern */}
-      <div className="absolute inset-0 overflow-hidden z-0">
-        <div className="absolute top-0 left-0 w-full h-full"></div>
-        <div className="absolute w-full h-full bg-[radial-gradient(ellipse_at_right,_var(--tw-gradient-stops))] from-[#ff2a6d]/20 via-transparent to-transparent"></div>
-        <div className="absolute w-full h-full bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))] from-[#05d9e8]/20 via-transparent to-transparent"></div>
-        
-        {/* Animated circles */}
-        <div className="absolute top-[10%] left-[5%] w-96 h-96 bg-[#ff2a6d]/10 rounded-full filter blur-3xl animate-pulse-slow"></div>
-        <div className="absolute bottom-[10%] right-[5%] w-96 h-96 bg-[#05d9e8]/10 rounded-full filter blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-[40%] right-[25%] w-64 h-64 bg-[#d800ff]/10 rounded-full filter blur-3xl animate-pulse-slow" style={{ animationDelay: '3s' }}></div>
-        
-        {/* Grid pattern overlay */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.15]"></div>
-      </div>
-      
-      {/* Custom cursor */}
-      <div ref={cursorRef} className="custom-cursor hidden md:block"></div>
-      
-      {/* Hero section with 3D effect */}
-      <div className="pt-20 h-screen flex flex-col items-center justify-center relative z-10">
-        <div 
-          ref={heroRef} 
-          className="container mx-auto px-4 py-32 flex flex-col items-center justify-center transform-gpu"
-          style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
-        >
-         
-          <h2 className="text-2xl md:text-4xl text-center mb-8 glow-text">
-            Web Developer & Designer
-          </h2>
-          <p className="text-lg md:text-xl text-center max-w-2xl mb-12">
-            Creating <span className="text-[#05d9e8] dark:text-[#05d9e8] light:text-[#05d9e8]">stunning</span>, 
-            <span className="text-[#ff2a6d] dark:text-[#ff2a6d] light:text-[#ff2a6d]">interactive</span> experiences with modern web technologies.
-            Specializing in 3D animations, responsive design, and creative UI/UX.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <Link 
-              to="/projects" 
-              className="btn text-[#ff2a6d] border-[#ff2a6d]"
-            >
-              View My Work
-            </Link>
-            <Link 
-              to="/contact"
-              className="btn text-[#05d9e8] border-[#05d9e8]"
-            >
-              Get In Touch
-            </Link>
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-neutral-950 dark:to-neutral-900 relative overflow-hidden">
+      <Background3D />
+      <div className="relative z-10">
+        <div className="container mx-auto px-6 md:px-8 max-w-5xl py-24 md:py-32">
+          <div className="flex flex-col items-center text-center">
+            <div className="max-w-2xl">
+              <div className="mb-6 relative">
+                <div className="absolute left-1/2 -translate-x-1/2 -top-4 w-16 h-px bg-gradient-to-r from-transparent via-neutral-800/30 to-transparent dark:via-neutral-200/30"></div>
+               
+              </div>
+              
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight mb-8 font-sans relative">
+                <div className="absolute left-1/2 -translate-x-1/2 -bottom-4 w-32 h-px bg-gradient-to-r from-transparent via-neutral-800/30 to-transparent dark:via-neutral-200/30"></div>
+                Creating digital<br /> 
+                experiences that <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400">matter</span>
+              </h1>
+              
+              <p className="text-lg md:text-xl leading-relaxed text-neutral-600 dark:text-neutral-400 mb-12 relative">
+                <div className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-24 h-px bg-gradient-to-r from-transparent via-neutral-800/30 to-transparent dark:via-neutral-200/30"></div>
+                I'm a developer focused on crafting clean, user-friendly websites and applications with modern technologies and intuitive interfaces.
+              </p>
+              
+              <div className="flex flex-wrap gap-5 justify-center relative">
+                <div className="absolute left-1/2 -translate-x-1/2 -top-6 w-20 h-px bg-gradient-to-r from-transparent via-neutral-800/30 to-transparent dark:via-neutral-200/30"></div>
+                <Link 
+                  to="/projects" 
+                  className="px-8 py-4 rounded-full bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 hover:shadow-lg transition-all text-base font-medium relative group"
+                >
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 opacity-0 group-hover:opacity-100 transition-opacity -z-10"></div>
+                  View Projects
+                </Link>
+                <Link 
+                  to="/contact"
+                  className="px-8 py-4 rounded-full border border-neutral-300 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-600 transition-all text-base font-medium relative group"
+                >
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-600/10 to-violet-600/10 opacity-0 group-hover:opacity-100 transition-opacity -z-10"></div>
+                  Contact Me
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-        
-        {/* Scroll down indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-[#05d9e8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </div>
       </div>
       
-      {/* Featured technologies section */}
-      <div className="py-24 backdrop-blur-sm relative z-10 border-t border-[#05d9e8]/30">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 neon-text">Technologies I Work With</h2>
+      {/* Technology section with clean cards */}
+      <div className="py-24 relative z-10 border-t border-neutral-200 dark:border-neutral-800 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-sm">
+        <div className="container mx-auto px-6 md:px-8 max-w-6xl">
+          <div className="mb-16 text-center">
+            <span className="text-xs uppercase tracking-widest font-medium text-indigo-600 dark:text-indigo-400 mb-3 block">Expertise</span>
+            <h2 className="text-3xl md:text-4xl font-bold">Technologies</h2>
+          </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { name: 'React', icon: '⚛️' },
-              { name: 'Three.js', icon: '🌟' },
-              { name: 'Node.js', icon: '🚀' },
-              { name: 'TypeScript', icon: '📝' },
-              { name: 'Tailwind CSS', icon: '🎨' },
-              { name: 'GraphQL', icon: '📊' },
-              { name: 'Next.js', icon: '⚡' },
-              { name: 'MongoDB', icon: '🗄️' }
-            ].map((tech, index) => (
+              { name: 'React', desc: 'Frontend Library', icon: '⚛️' },
+              { name: 'TypeScript', desc: 'Type Safety', icon: '📘' },
+              { name: 'Tailwind', desc: 'CSS Framework', icon: '🎨' },
+              { name: 'Node.js', desc: 'Backend Runtime', icon: '🟢' },
+              { name: 'Next.js', desc: 'React Framework', icon: '⏭️' },
+              { name: 'Three.js', desc: '3D Graphics', icon: '🎮' },
+              { name: 'GraphQL', desc: 'API Query Language', icon: '🔍' },
+              { name: 'MongoDB', desc: 'NoSQL Database', icon: '🗄️' }
+            ].map((tech) => (
               <div 
                 key={tech.name} 
-                className="hover-3d p-6 rounded-md border border-[#05d9e8]/30 backdrop-blur-sm group"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="group p-6 bg-white/50 dark:bg-neutral-900/50 backdrop-blur-sm rounded-2xl hover:shadow-lg transition-all border border-neutral-200 dark:border-neutral-800 relative overflow-hidden"
               >
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{tech.icon}</div>
-                <div className="text-xl font-semibold hover-underline">{tech.name}</div>
+                {/* Shining effect overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Glowing border effect */}
+                <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-indigo-500/30 transition-all duration-300"></div>
+                
+                <div className="relative z-10">
+                  <div className="text-3xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
+                    {tech.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{tech.name}</h3>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">{tech.desc}</p>
+                </div>
               </div>
             ))}
           </div>

@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import SkyForgeLogo from './SkyForgeLogo';
 
 const Navbar = () => {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
 
   // Toggle theme
   const toggleTheme = () => {
@@ -41,156 +44,218 @@ const Navbar = () => {
     }
   }, []);
 
-  const navBgClass = isDarkTheme 
-    ? "bg-[#0a0a16]/90 border-b border-[#05d9e8]/30 text-[#e0e0ff]" 
-    : "bg-[#f0f0ff]/90 border-b border-[#05d9e8]/30 text-[#0a0a16]";
+  // Add scroll detection
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
 
-  const mobileBgClass = isDarkTheme
-    ? "bg-[#0a0a16]/95 backdrop-blur-sm border-t border-[#05d9e8]/30"
-    : "bg-[#f0f0ff]/95 backdrop-blur-sm border-t border-[#05d9e8]/30";
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // Define active link style
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 backdrop-blur-sm ${navBgClass}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center">
-              {/* Logo */}
-              <div className="w-10 h-10 bg-transparent border-2 border-[#ff2a6d] flex items-center justify-center mr-4 shadow-[0_0_10px_rgba(255,42,109,0.6)] rounded-full">
-                <span className="text-[#ff2a6d] font-bold text-xl neon-text">H</span>
-              </div>
-              <span className="text-2xl font-bold tracking-wider glitch" data-text="HARRY.dev">HARRY.dev</span>
-            </Link>
-          </div>
+    <nav 
+      className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 w-[95%] max-w-7xl ${
+        isScrolled 
+          ? 'py-3 px-16 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md shadow-sm rounded-full' 
+          : 'py-3 px-16 bg-transparent'
+      }`}
+    >
+      <div className="flex justify-between items-center w-full">
+        <div className="flex items-center">
+          <Link to="/" className="flex items-center">
+            <SkyForgeLogo />
+          </Link>
+        </div>
+        
+        {/* Desktop navigation */}
+        <div className="hidden md:flex items-center space-x-4">
+          <Link 
+            to="/" 
+            className={`px-6 py-2 rounded-full text-sm font-medium transition-colors navbar-font ${
+              isActive('/') 
+                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' 
+                : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'
+            }`}
+          >
+            Home
+          </Link>
+          <Link 
+            to="/about" 
+            className={`px-6 py-2 rounded-full text-sm font-medium transition-colors navbar-font ${
+              isActive('/about') 
+                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' 
+                : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'
+            }`}
+          >
+            About
+          </Link>
+          <Link 
+            to="/projects" 
+            className={`px-6 py-2 rounded-full text-sm font-medium transition-colors navbar-font ${
+              isActive('/projects') 
+                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' 
+                : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'
+            }`}
+          >
+            Projects
+          </Link>
+          <Link 
+            to="/contact" 
+            className={`px-6 py-2 rounded-full text-sm font-medium transition-colors navbar-font ${
+              isActive('/contact') 
+                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' 
+                : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'
+            }`}
+          >
+            Contact
+          </Link>
+          <Link 
+            to="/feedback" 
+            className={`px-6 py-2 rounded-full text-sm font-medium transition-colors navbar-font ${
+              isActive('/feedback') 
+                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' 
+                : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'
+            }`}
+          >
+            Feedback
+          </Link>
           
-          {/* Desktop navigation */}
-          <div className="hidden md:flex items-center">
-            <Link to="/" className="px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          {/* Theme toggle button */}
+          <button
+            onClick={toggleTheme}
+            className="ml-6 p-2.5 rounded-full focus:outline-none bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {isDarkTheme ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-neutral-600 dark:text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
-              Home
-            </Link>
-            <Link to="/about" className="px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-neutral-600 dark:text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
               </svg>
-              About
-            </Link>
-            <Link to="/projects" className="px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            )}
+          </button>
+        </div>
+        
+        {/* Mobile menu button */}
+        <div className="md:hidden flex items-center">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2.5 rounded-full focus:outline-none bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-neutral-600 dark:text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              Projects
-            </Link>
-            <Link to="/contact" className="px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-neutral-600 dark:text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
               </svg>
-              Contact
-            </Link>
-            <Link to="/feedback" className="px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-              </svg>
-              Feedback
-            </Link>
-            
-            {/* Theme toggle button */}
-            <button 
-              onClick={toggleTheme}
-              className="ml-4 p-2 rounded-full focus:outline-none hover:bg-[#05d9e8]/10 transition-colors border border-[#05d9e8]/50"
-              aria-label="Toggle theme"
-            >
-              {isDarkTheme ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#05d9e8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#05d9e8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              )}
-            </button>
-          </div>
-          
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-md focus:outline-none hover:bg-[#05d9e8]/10 transition-colors border border-[#05d9e8]/50"
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#05d9e8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#05d9e8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-                </svg>
-              )}
-            </button>
-          </div>
+            )}
+          </button>
         </div>
       </div>
       
       {/* Mobile menu */}
-      <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'} ${mobileBgClass}`}>
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <Link to="/" className="flex items-center px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            Home
-          </Link>
-          <Link to="/about" className="flex items-center px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            About
-          </Link>
-          <Link to="/projects" className="flex items-center px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-            Projects
-          </Link>
-          <Link to="/contact" className="flex items-center px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            Contact
-          </Link>
-          <Link to="/feedback" className="flex items-center px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-            </svg>
-            Feedback
-          </Link>
-          
-          {/* Theme toggle button for mobile */}
-          <button 
-            onClick={toggleTheme}
-            className="w-full text-left flex items-center px-3 py-2 rounded-md font-medium hover:text-[#05d9e8] transition-colors"
-            aria-label="Toggle theme"
-          >
-            {isDarkTheme ? (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                Light Mode
-              </>
-            ) : (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-                Dark Mode
-              </>
-            )}
-          </button>
+      <div 
+        className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+          isMenuOpen 
+            ? 'max-h-96 opacity-100' 
+            : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="px-8 py-4 bg-white dark:bg-neutral-900 shadow-md rounded-xl mt-2">
+          <div className="flex flex-col space-y-3">
+            <Link 
+              to="/" 
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-colors ${
+                isActive('/') 
+                  ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' 
+                  : 'text-neutral-600 dark:text-neutral-300'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link 
+              to="/about" 
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-colors ${
+                isActive('/about') 
+                  ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' 
+                  : 'text-neutral-600 dark:text-neutral-300'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              About
+            </Link>
+            <Link 
+              to="/projects" 
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-colors ${
+                isActive('/projects') 
+                  ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' 
+                  : 'text-neutral-600 dark:text-neutral-300'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Projects
+            </Link>
+            <Link 
+              to="/contact" 
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-colors ${
+                isActive('/contact') 
+                  ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' 
+                  : 'text-neutral-600 dark:text-neutral-300'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Contact
+            </Link>
+            <Link 
+              to="/feedback" 
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-colors ${
+                isActive('/feedback') 
+                  ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' 
+                  : 'text-neutral-600 dark:text-neutral-300'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Feedback
+            </Link>
+            
+            {/* Theme toggle button for mobile */}
+            <button
+              onClick={toggleTheme}
+              className="flex items-center justify-between px-5 py-2.5 rounded-full text-sm font-medium text-neutral-600 dark:text-neutral-300"
+            >
+              <span>{isDarkTheme ? 'Light Mode' : 'Dark Mode'}</span>
+              <div className="p-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800">
+                {isDarkTheme ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                )}
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </nav>

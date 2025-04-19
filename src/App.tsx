@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
+import PageLayout from './components/PageLayout';
 
 // Import pages
 import Home from './pages/Home';
@@ -37,27 +38,41 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="App min-h-screen crt-effect">
+      <div className="App min-h-screen">
         <Navbar />
         
-        <div className="pt-16"> {/* Add padding for navbar */}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/feedback" element={<Feedback />} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={
+            <PageLayout>
+              <About />
+            </PageLayout>
+          } />
+          <Route path="/projects" element={
+            <PageLayout>
+              <Projects />
+            </PageLayout>
+          } />
+          <Route path="/contact" element={
+            <PageLayout>
+              <Contact />
+            </PageLayout>
+          } />
+          <Route path="/feedback" element={
+            <PageLayout>
+              <Feedback />
+            </PageLayout>
+          } />
+        </Routes>
 
         {/* Back to top floating button */}
         {showScrollButton && (
           <button
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 p-3 rounded-md bg-transparent border border-[#05d9e8] text-[#05d9e8] shadow-[0_0_10px_rgba(5,217,232,0.5)] hover:bg-[#05d9e8]/10 transition-all duration-300 transform hover:scale-110"
+            className="fixed bottom-8 right-8 p-3 rounded-full bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-200 shadow-md hover:shadow-lg transition-all duration-300 z-50"
             aria-label="Back to top"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
             </svg>
           </button>

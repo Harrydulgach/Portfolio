@@ -1,4 +1,5 @@
 import { useState, FormEvent } from 'react';
+import Background3D from '../components/Background3D';
 
 // Sample testimonial data with real images
 const testimonials = [
@@ -42,287 +43,212 @@ const testimonials = [
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80',
     date: 'September 5, 2023'
   },
-  {
-    id: 5,
-    name: 'Sophia Martinez',
-    company: 'StyleShop',
-    position: 'Marketing Director',
-    comment: 'Our e-commerce site built by Harry has been a game-changer for our fashion brand. The seamless checkout process and beautiful product displays have significantly boosted our sales.',
-    rating: 5,
-    avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80',
-    date: 'November 18, 2023'
-  },
-  {
-    id: 6,
-    name: 'James Thompson',
-    company: 'Global Solutions',
-    position: 'Product Manager',
-    comment: "Harry's expertise in React and TypeScript made our complex web application development smooth and efficient. His attention to detail and problem-solving skills are outstanding.",
-    rating: 5,
-    avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80',
-    date: 'February 8, 2024'
-  }
+ 
 ];
 
 const Feedback = () => {
+  const [currentFilter, setCurrentFilter] = useState('all');
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    company: '',
-    position: '',
     rating: 5,
     comment: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<null | 'success' | 'error'>(null);
-  const [currentFilter, setCurrentFilter] = useState('all');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleRatingChange = (rating: number) => {
-    setFormData(prev => ({ ...prev, rating }));
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-
-    // Simulate API call
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Feedback submitted:', formData);
-      setSubmitStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        company: '',
-        position: '',
-        rating: 5,
-        comment: ''
-      });
-    } catch (error) {
-      console.error('Error submitting feedback:', error);
-      setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Filter testimonials by rating
   const filteredTestimonials = currentFilter === 'all' 
     ? testimonials 
-    : testimonials.filter(item => item.rating === parseInt(currentFilter, 10));
+    : testimonials.filter(t => t.rating === parseInt(currentFilter));
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    // Simulate form submission
+    setSubmitStatus('success');
+    setFormData({ name: '', email: '', rating: 5, comment: '' });
+  };
 
   return (
-    <div className="page-background">
-      <div className="page-background-patterns">
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] dark:opacity-[0.02]"></div>
+    <div className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200">
+      {/* 3D Background */}
+      <Background3D />
+      
+      {/* Minimal background gradient */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-950"></div>
+        <div className="absolute top-0 left-0 right-0 h-[50vh] opacity-20 bg-gradient-to-r from-indigo-200 via-transparent to-rose-200 dark:from-indigo-950 dark:to-rose-950 blur-3xl"></div>
       </div>
       
-      <div className="page-content-container space-y-xl">
-        <header className="text-center space-y-8 mb-20">
-          <h1 className="text-4xl md:text-6xl font-bold font-['Montserrat',sans-serif] text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Client Feedback</h1>
-          <p className="text-lg md:text-xl max-w-3xl mx-auto">
-            See what my clients have to say about working with me and share your own experience
-          </p>
-        </header>
+      {/* Grain texture overlay for authenticity */}
+      <div className="absolute inset-0 z-[1] bg-noise opacity-[0.02] dark:opacity-[0.04]"></div>
 
-        {/* Testimonials section */}
-        <div className="mb-32">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-12">
-            <h2 className="text-3xl font-bold mb-6 md:mb-0 neon-text">Client Testimonials</h2>
-            <div className="flex gap-2">
-              <select
-                className="px-4 py-3 rounded-md bg-transparent border border-[#05d9e8] text-[#05d9e8] focus:outline-none focus:ring-2 focus:ring-[#05d9e8] hover:bg-[#05d9e8]/10 transition-all"
-                value={currentFilter}
-                onChange={(e) => setCurrentFilter(e.target.value)}
-              >
-                <option value="all">All Ratings</option>
-                <option value="5">5 Stars</option>
-                <option value="4">4 Stars</option>
-                <option value="3">3 Stars</option>
-                <option value="2">2 Stars</option>
-                <option value="1">1 Star</option>
-              </select>
+      <div className="container mx-auto px-6 md:px-8 max-w-5xl py-12 md:py-16 relative z-10">
+        <div className="space-y-12">
+          <header className="mb-12">
+            <div className="mb-4">
+              <span className="text-xs uppercase tracking-widest font-medium text-indigo-600 dark:text-indigo-400">Testimonials</span>
+            </div>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-6">
+              Client <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400">Feedback</span>
+            </h1>
+            <p className="text-base md:text-lg leading-relaxed text-neutral-600 dark:text-neutral-400 max-w-3xl">
+              See what my clients have to say about working with me and share your own experience
+            </p>
+          </header>
+
+          {/* Testimonials section */}
+          <div className="space-y-8">
+            <h2 className="text-2xl font-bold mb-8">Client Testimonials</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {testimonials.map((testimonial) => (
+                <div 
+                  key={testimonial.id} 
+                  className="group p-6 bg-white dark:bg-neutral-950 rounded-2xl hover:shadow-lg transition-all border border-neutral-200 dark:border-neutral-800 relative overflow-hidden"
+                >
+                  {/* Shining effect overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  {/* Glowing border effect */}
+                  <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-indigo-500/30 transition-all duration-300"></div>
+
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-indigo-500/30">
+                        <img 
+                          src={testimonial.avatar} 
+                          alt={testimonial.name} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{testimonial.name}</h3>
+                        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                          {testimonial.position} at {testimonial.company}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex mb-3">
+                      {[...Array(5)].map((_, i) => (
+                        <svg 
+                          key={i} 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          className={`h-4 w-4 ${i < testimonial.rating ? 'text-indigo-600 dark:text-indigo-400' : 'text-neutral-300 dark:text-neutral-700'}`}
+                          viewBox="0 0 20 20" 
+                          fill="currentColor"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">{testimonial.comment}</p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-500">{testimonial.date}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
-            {filteredTestimonials.map((testimonial) => (
-              <div 
-                key={testimonial.id} 
-                className="hover-3d p-8 rounded-md backdrop-blur-sm"
-              >
-                <div className="flex items-center gap-6 mb-6">
-                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#05d9e8] shadow-[0_0_10px_rgba(5,217,232,0.3)]">
-                    <img 
-                      src={testimonial.avatar} 
-                      alt={testimonial.name} 
-                      className="w-full h-full object-cover"
+          {/* Leave feedback form */}
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white dark:bg-neutral-950 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-8">
+              <h2 className="text-2xl font-bold mb-6 text-center">Share Your Experience</h2>
+              
+              {submitStatus === 'success' && (
+                <div className="mb-6 p-4 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-lg border border-green-200 dark:border-green-800">
+                  Thank you for your feedback! Your testimonial has been submitted and will be reviewed soon.
+                </div>
+              )}
+              
+              {submitStatus === 'error' && (
+                <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800">
+                  There was an error submitting your feedback. Please try again later.
+                </div>
+              )}
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      className="w-full px-4 py-2 rounded-lg bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-all"
+                      required
                     />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold">{testimonial.name}</h3>
-                    <p className="text-sm opacity-80">
-                      {testimonial.position} at {testimonial.company}
-                    </p>
+                    <label htmlFor="email" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      className="w-full px-4 py-2 rounded-lg bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-all"
+                      required
+                    />
                   </div>
                 </div>
                 
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg 
-                      key={i} 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      className={`h-5 w-5 ${i < testimonial.rating ? 'text-[#ff2a6d]' : 'opacity-30'}`}
-                      viewBox="0 0 20 20" 
-                      fill="currentColor"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                    Rating
+                  </label>
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                      <button
+                        key={rating}
+                        type="button"
+                        onClick={() => setFormData({...formData, rating})}
+                        className={`p-2 rounded-lg transition-colors ${
+                          formData.rating >= rating
+                            ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30'
+                            : 'text-neutral-400 dark:text-neutral-600 bg-neutral-50 dark:bg-neutral-800'
+                        }`}
+                      >
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          className="h-5 w-5" 
+                          viewBox="0 0 20 20" 
+                          fill="currentColor"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 
-                <p className="mb-6 text-lg leading-relaxed">"{testimonial.comment}"</p>
+                <div>
+                  <label htmlFor="comment" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                    Your Feedback
+                  </label>
+                  <textarea
+                    id="comment"
+                    value={formData.comment}
+                    onChange={(e) => setFormData({...formData, comment: e.target.value})}
+                    rows={4}
+                    className="w-full px-4 py-2 rounded-lg bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-all"
+                    required
+                  ></textarea>
+                </div>
                 
-                <p className="text-sm opacity-60">{testimonial.date}</p>
-              </div>
-            ))}
+                <button
+                  type="submit"
+                  className="w-full px-6 py-3 rounded-full bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors font-medium"
+                >
+                  Submit Feedback
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
-
-        {/* Leave feedback form */}
-        <div className="max-w-3xl mx-auto hover-3d p-10">
-          <h2 className="text-3xl font-bold mb-10 neon-text text-center">Share Your Experience</h2>
-          
-          {submitStatus === 'success' && (
-            <div className="mb-8 p-6 bg-green-100 bg-opacity-20 border border-green-500 text-green-500 rounded-md">
-              Thank you for your feedback! Your testimonial has been submitted and will be reviewed soon.
-            </div>
-          )}
-          
-          {submitStatus === 'error' && (
-            <div className="mb-8 p-6 bg-red-100 bg-opacity-20 border border-red-500 text-red-500 rounded-md">
-              There was an error submitting your feedback. Please try again later.
-            </div>
-          )}
-          
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <label htmlFor="name" className="block text-base font-medium mb-3">
-                  Your Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-5 py-4 rounded-md border border-[#05d9e8]/50 bg-transparent focus:outline-none focus:border-[#05d9e8] focus:ring-2 focus:ring-[#05d9e8]/30 transition-colors"
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="email" className="block text-base font-medium mb-3">
-                  Your Email *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-5 py-4 rounded-md border border-[#05d9e8]/50 bg-transparent focus:outline-none focus:border-[#05d9e8] focus:ring-2 focus:ring-[#05d9e8]/30 transition-colors"
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="company" className="block text-base font-medium mb-3">
-                  Company
-                </label>
-                <input
-                  type="text"
-                  id="company"
-                  name="company"
-                  value={formData.company}
-                  onChange={handleChange}
-                  className="w-full px-5 py-4 rounded-md border border-[#05d9e8]/50 bg-transparent focus:outline-none focus:border-[#05d9e8] focus:ring-2 focus:ring-[#05d9e8]/30 transition-colors"
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="position" className="block text-base font-medium mb-3">
-                  Position
-                </label>
-                <input
-                  type="text"
-                  id="position"
-                  name="position"
-                  value={formData.position}
-                  onChange={handleChange}
-                  className="w-full px-5 py-4 rounded-md border border-[#05d9e8]/50 bg-transparent focus:outline-none focus:border-[#05d9e8] focus:ring-2 focus:ring-[#05d9e8]/30 transition-colors"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-base font-medium mb-3">
-                Your Rating *
-              </label>
-              <div className="flex gap-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => handleRatingChange(star)}
-                    className="text-3xl focus:outline-none"
-                  >
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      className={`h-10 w-10 ${formData.rating >= star ? 'text-[#ff2a6d]' : 'opacity-30'} transition-colors`}
-                      viewBox="0 0 20 20" 
-                      fill="currentColor"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <div>
-              <label htmlFor="comment" className="block text-base font-medium mb-3">
-                Your Feedback *
-              </label>
-              <textarea
-                id="comment"
-                name="comment"
-                value={formData.comment}
-                onChange={handleChange}
-                required
-                rows={6}
-                className="w-full px-5 py-4 rounded-md border border-[#05d9e8]/50 bg-transparent focus:outline-none focus:border-[#05d9e8] focus:ring-2 focus:ring-[#05d9e8]/30 transition-colors"
-                placeholder="Share your experience working with me..."
-              ></textarea>
-            </div>
-            
-            <div className="flex justify-center mt-10">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-10 py-4 rounded-md bg-transparent border border-[#ff2a6d] text-[#ff2a6d] hover:bg-[#ff2a6d]/10 hover:shadow-[0_0_15px_rgba(255,42,109,0.6)] transition-all transform hover:scale-105 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-[#ff2a6d]/50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
-              </button>
-            </div>
-          </form>
         </div>
       </div>
     </div>
